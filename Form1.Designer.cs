@@ -31,9 +31,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.lbPlanet = new System.Windows.Forms.Label();
             this.isCustom = new System.Windows.Forms.CheckBox();
             this.defaultBodies = new System.Windows.Forms.ComboBox();
@@ -164,6 +164,7 @@
             // simulateButton
             // 
             this.simulateButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.simulateButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.simulateButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.simulateButton.Location = new System.Drawing.Point(19, 329);
             this.simulateButton.Name = "simulateButton";
@@ -211,31 +212,33 @@
             this.console.ForeColor = System.Drawing.Color.Orange;
             this.console.Location = new System.Drawing.Point(277, 37);
             this.console.Name = "console";
-            this.console.Size = new System.Drawing.Size(491, 123);
+            this.console.Size = new System.Drawing.Size(491, 225);
             this.console.TabIndex = 18;
             this.console.Text = "";
             // 
             // svrChart
             // 
-            chartArea5.Name = "ChartArea1";
-            this.svrChart.ChartAreas.Add(chartArea5);
-            legend5.Name = "Legend1";
-            this.svrChart.Legends.Add(legend5);
-            this.svrChart.Location = new System.Drawing.Point(277, 178);
+            chartArea1.Name = "ChartArea1";
+            this.svrChart.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.svrChart.Legends.Add(legend1);
+            this.svrChart.Location = new System.Drawing.Point(298, 271);
             this.svrChart.Name = "svrChart";
             this.svrChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Excel;
-            series5.ChartArea = "ChartArea1";
-            series5.IsXValueIndexed = true;
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            this.svrChart.Series.Add(series5);
+            series1.ChartArea = "ChartArea1";
+            series1.IsXValueIndexed = true;
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.svrChart.Series.Add(series1);
             this.svrChart.Size = new System.Drawing.Size(1032, 408);
             this.svrChart.TabIndex = 19;
             this.svrChart.Text = "chart1";
             // 
             // closeButton
             // 
-            this.closeButton.BackColor = System.Drawing.Color.DarkRed;
+            this.closeButton.BackColor = System.Drawing.Color.Tomato;
+            this.closeButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.closeButton.FlatAppearance.BorderSize = 0;
             this.closeButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.closeButton.Location = new System.Drawing.Point(19, 376);
             this.closeButton.Name = "closeButton";
@@ -247,7 +250,7 @@
             // 
             // tbSatSave
             // 
-            this.tbSatSave.Location = new System.Drawing.Point(791, 53);
+            this.tbSatSave.Location = new System.Drawing.Point(12, 467);
             this.tbSatSave.Name = "tbSatSave";
             this.tbSatSave.Size = new System.Drawing.Size(174, 20);
             this.tbSatSave.TabIndex = 21;
@@ -255,31 +258,31 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(788, 37);
+            this.label1.Location = new System.Drawing.Point(9, 451);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(114, 13);
+            this.label1.Size = new System.Drawing.Size(127, 13);
             this.label1.TabIndex = 22;
-            this.label1.Text = "Zapisz satelite do pliku";
+            this.label1.Text = "Zapisz parametry do pliku";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(788, 90);
+            this.label5.Location = new System.Drawing.Point(9, 504);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(114, 13);
+            this.label5.Size = new System.Drawing.Size(127, 13);
             this.label5.TabIndex = 24;
-            this.label5.Text = "Wczytaj satelite z pliku";
+            this.label5.Text = "Wczytaj parametry z pliku";
             // 
             // tbSatLoad
             // 
-            this.tbSatLoad.Location = new System.Drawing.Point(791, 106);
+            this.tbSatLoad.Location = new System.Drawing.Point(12, 520);
             this.tbSatLoad.Name = "tbSatLoad";
             this.tbSatLoad.Size = new System.Drawing.Size(174, 20);
             this.tbSatLoad.TabIndex = 23;
             // 
             // SaveButtun
             // 
-            this.SaveButtun.Location = new System.Drawing.Point(980, 50);
+            this.SaveButtun.Location = new System.Drawing.Point(201, 464);
             this.SaveButtun.Name = "SaveButtun";
             this.SaveButtun.Size = new System.Drawing.Size(75, 23);
             this.SaveButtun.TabIndex = 25;
@@ -289,7 +292,7 @@
             // 
             // LoadButton
             // 
-            this.LoadButton.Location = new System.Drawing.Point(980, 104);
+            this.LoadButton.Location = new System.Drawing.Point(201, 518);
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(75, 23);
             this.LoadButton.TabIndex = 26;
@@ -299,10 +302,10 @@
             // 
             // webBrowser
             // 
-            this.webBrowser.Location = new System.Drawing.Point(1315, 200);
+            this.webBrowser.Location = new System.Drawing.Point(816, 37);
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(369, 351);
+            this.webBrowser.Size = new System.Drawing.Size(514, 225);
             this.webBrowser.TabIndex = 27;
             this.webBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             // 
@@ -311,7 +314,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1718, 719);
+            this.ClientSize = new System.Drawing.Size(1383, 719);
             this.Controls.Add(this.webBrowser);
             this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.SaveButtun);
