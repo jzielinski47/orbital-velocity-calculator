@@ -34,6 +34,10 @@ Core Functionalities
 - Interactive Interface:
   - View images and details of celestial bodies directly in the application.
 
+![image](https://github.com/user-attachments/assets/8de40cdb-5e85-4557-a9ba-04a1a3318a80)
+![image](https://github.com/user-attachments/assets/930f4afd-55d6-4e80-8d02-9ac88f298227)
+
+
 ## Technologies Used
 <b>Programming Language:</b> C#
 
