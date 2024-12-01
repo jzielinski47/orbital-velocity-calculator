@@ -11,13 +11,15 @@ namespace OrbitalCalculatorApp
         public string Name { get; }
         public double R { get; }  // Promień w km
         public double M { get; }  // Masa w kg
-        
 
-        public Body(string name, double r, double m)
+        public string Url { get; set; }
+
+        public Body(string name, double r, double m, string url = null)
         {
             Name = name;
             R = r;
             M = m;           
+            Url = url;
         }
 
     }

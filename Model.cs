@@ -23,15 +23,15 @@ namespace OrbitalCalculatorApp
 
             DefaultPlanets = new Body[]
             {
-                new Body("Słońce", 696340, 1.989E30),
-                new Body("Ziemia", 6378, 5.972E24),
-                new Body("Mars", 3389.5, 6.417E23),
-                new Body("Jowisz", 69911, 1.898E27),
-                new Body("Wenus", 6051.8, 4.867E24),
-                new Body("Merkury", 2439.7, 3.285E23),
-                new Body("Saturn", 58232, 5.683E26),
-                new Body("Uran", 25362, 8.681E25),
-                new Body("Neptun", 24622, 1.024E26),
+                new Body("Słońce", 696340, 1.989E30, "https://upload.wikimedia.org/wikipedia/commons/c/c3/Solar_sys8.jpg"),
+                new Body("Ziemia", 6378, 5.972E24, "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"),
+                new Body("Mars", 3389.5, 6.417E23, "https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg"),
+                new Body("Jowisz", 69911, 1.898E27, "https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg"),
+                new Body("Wenus", 6051.8, 4.867E24, "https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg"),
+                new Body("Merkury", 2439.7, 3.285E23, "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg"),
+                new Body("Saturn", 58232, 5.683E26, "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg"),
+                new Body("Uran", 25362, 8.681E25, "https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"),
+                new Body("Neptun", 24622, 1.024E26, "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg")
             };
 
         }
@@ -42,7 +42,8 @@ namespace OrbitalCalculatorApp
             {
                 this.M = Convert.ToDouble(local);
                 return true;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;

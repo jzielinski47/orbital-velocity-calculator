@@ -25,12 +25,13 @@ namespace OrbitalCalculatorApp
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            populatePlanetComboBox();
+            init();
+            webBrowser.DocumentCompleted += webBrowser_DocumentCompleted;
             lbConstantG.Text = "Stała grawitacyjna przyjęta jako " + Model.G.ToString();
             manageInputLocker(isCustom.Checked);
         }
 
-        private void populatePlanetComboBox()
+        private void init()
         {
             defaultBodies.Items.Clear();
             string[] planetNames = controller.GetPlanetNames();
@@ -40,7 +41,8 @@ namespace OrbitalCalculatorApp
 
             if (defaultBodies.Items.Count > 0)
             {
-                defaultBodies.SelectedIndex = rand.Next(defaultBodies.Items.Count - 1);
+                int selectedIndex = rand.Next(defaultBodies.Items.Count - 1);     
+                defaultBodies.SelectedIndex = selectedIndex;
             }
         }
 
@@ -49,6 +51,15 @@ namespace OrbitalCalculatorApp
             Body selectedBody = model.DefaultPlanets[defaultBodies.SelectedIndex];
             customM.Text = selectedBody.M.ToString();
             customR.Text = selectedBody.R.ToString();
+
+            if (!string.IsNullOrEmpty(selectedBody.Url))
+            {
+                webBrowser.Navigate(selectedBody.Url);
+            }
+            else
+            {
+                MessageBox.Show($"No information available for {selectedBody.Name}.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void isCustom_CheckedChanged(object sender, EventArgs e)
@@ -215,18 +226,10 @@ namespace OrbitalCalculatorApp
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            // ad tbSatSave
-
-            /*
-             * Domyślnie planowalem zeby dane były zapisywane w pliku csv, a nie txt
-             * zeby pozniej wygodnie bylo skalowac ta aplikacje
-             */
-
-
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Title = "Save Satellite Data",
-                Filter = "CSV files (*.csv)|*.csv|Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                Title = "Zapisz dane satelity",
+                Filter = "Pliki CSV (*.csv)|*.csv|Wszystkie pliki (*.*)|*.*",
                 DefaultExt = "csv",
                 AddExtension = true,
                 FileName = "satellite_data.csv"
@@ -234,7 +237,6 @@ namespace OrbitalCalculatorApp
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-
                 string filePath = saveFileDialog.FileName;
                 tbSatSave.Text = filePath;
 
@@ -242,90 +244,82 @@ namespace OrbitalCalculatorApp
                 {
                     using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.UTF8))
                     {
-                        sw.WriteLine("Parameter;Value");
+                        sw.WriteLine("Parametr;Wartość");
                         sw.WriteLine($"customM;{customM.Text}");
                         sw.WriteLine($"customR;{customR.Text}");
                         sw.WriteLine($"satM;{satM.Text}");
                         sw.WriteLine($"satH;{satH.Text}");
                     }
-
-                    MessageBox.Show("Dane zostały zapisane do pliku CSV pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Dane zostały zapisane pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Błąd podczas zapisywania danych: {ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
-
         }
 
         private void LoadButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Title = "Load Satellite Data",
-                Filter = "CSV files (*.csv)|*.csv|Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                Title = "Wczytaj dane satelity",
+                Filter = "Pliki CSV (*.csv)|*.csv|Wszystkie pliki (*.*)|*.*",
                 DefaultExt = "csv",
                 CheckFileExists = true
             };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+
                 string filePath = openFileDialog.FileName;
+                tbSatLoad.Text = filePath;
 
                 try
                 {
                     using (StreamReader sr = new StreamReader(filePath, Encoding.UTF8))
                     {
-                        string headerLine = sr.ReadLine();
+                        sr.ReadLine();
 
                         while (!sr.EndOfStream)
                         {
-                            string line = sr.ReadLine();
-                            string[] parts = line.Split(';');
+                            string[] csv = sr.ReadLine().Split(';');
 
-                            if (parts.Length == 2)
+                            if (csv.Length == 2)
                             {
-                                string parameter = parts[0];
-                                string value = parts[1];
-
-                                switch (parameter)
+                                switch (csv[0])
                                 {
                                     case "customM":
-                                        customM.Text = value;
+                                        customM.Text = csv[1];
                                         break;
                                     case "customR":
-                                        customR.Text = value;
+                                        customR.Text = csv[1];
                                         break;
                                     case "satM":
-                                        satM.Text = value;
+                                        satM.Text = csv[1];
                                         break;
                                     case "satH":
-                                        satH.Text = value;
-                                        break;
-                                    default:
-                                        MessageBox.Show($"Unrecognized parameter: {parameter}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        satH.Text = csv[1];
                                         break;
                                 }
                             }
-                            else
-                            {
-                                MessageBox.Show($"Invalid line format: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
                         }
                     }
-
-                    MessageBox.Show("Data loaded successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Dane zostały wczytane pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Błąd podczas wczytywania danych: {ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-
-
+        private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            if (webBrowser.Document != null)
+            {
+                webBrowser.Document.Body.Style = "zoom: 30%;";
+            }
+        }
     }
 }
