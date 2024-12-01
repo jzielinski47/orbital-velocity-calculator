@@ -115,7 +115,7 @@
             this.satH.Name = "satH";
             this.satH.Size = new System.Drawing.Size(149, 20);
             this.satH.TabIndex = 11;
-            this.satH.Text = "100";
+            this.satH.Text = "7000";
             // 
             // label2
             // 
@@ -205,6 +205,8 @@
             // 
             // console
             // 
+            this.console.BackColor = System.Drawing.SystemColors.MenuText;
+            this.console.ForeColor = System.Drawing.Color.Lime;
             this.console.Location = new System.Drawing.Point(277, 37);
             this.console.Name = "console";
             this.console.Size = new System.Drawing.Size(491, 123);
@@ -297,6 +299,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1360, 632);
             this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.SaveButtun);

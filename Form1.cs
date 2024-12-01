@@ -229,22 +229,25 @@ namespace OrbitalCalculatorApp
                 Filter = "CSV files (*.csv)|*.csv|Text files (*.txt)|*.txt|All files (*.*)|*.*",
                 DefaultExt = "csv",
                 AddExtension = true,
-                FileName = "satellite_data.csv" 
+                FileName = "satellite_data.csv"
             };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                
+
                 string filePath = saveFileDialog.FileName;
                 tbSatSave.Text = filePath;
 
                 try
                 {
-                    StreamWriter sw = new StreamWriter(filePath);
-                    sw.WriteLine($"customM,{customM.Text}");
-                    sw.WriteLine($"customR,{customR.Text}");
-                    sw.WriteLine($"satM,{satM.Text}");
-                    sw.WriteLine($"satH,{satH.Text}");
+                    using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.UTF8))
+                    {
+                        sw.WriteLine("Parameter;Value");
+                        sw.WriteLine($"customM;{customM.Text}");
+                        sw.WriteLine($"customR;{customR.Text}");
+                        sw.WriteLine($"satM;{satM.Text}");
+                        sw.WriteLine($"satH;{satH.Text}");
+                    }
 
                     MessageBox.Show("Dane zostały zapisane do pliku CSV pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -259,7 +262,70 @@ namespace OrbitalCalculatorApp
 
         private void LoadButton_Click(object sender, EventArgs e)
         {
-            // ad tbSatLoad
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = "Load Satellite Data",
+                Filter = "CSV files (*.csv)|*.csv|Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                DefaultExt = "csv",
+                CheckFileExists = true
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+
+                try
+                {
+                    using (StreamReader sr = new StreamReader(filePath, Encoding.UTF8))
+                    {
+                        string headerLine = sr.ReadLine();
+
+                        while (!sr.EndOfStream)
+                        {
+                            string line = sr.ReadLine();
+                            string[] parts = line.Split(';');
+
+                            if (parts.Length == 2)
+                            {
+                                string parameter = parts[0];
+                                string value = parts[1];
+
+                                switch (parameter)
+                                {
+                                    case "customM":
+                                        customM.Text = value;
+                                        break;
+                                    case "customR":
+                                        customR.Text = value;
+                                        break;
+                                    case "satM":
+                                        satM.Text = value;
+                                        break;
+                                    case "satH":
+                                        satH.Text = value;
+                                        break;
+                                    default:
+                                        MessageBox.Show($"Unrecognized parameter: {parameter}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Invalid line format: {line}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+
+                    MessageBox.Show("Data loaded successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
+
+
+
     }
 }
