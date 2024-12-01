@@ -8,9 +8,9 @@ namespace OrbitalCalculatorApp
 {
     internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        /*
+         * @author Jakub Zieliński K05 12K3 2024
+         */
         [STAThread]
         static void Main()
         {

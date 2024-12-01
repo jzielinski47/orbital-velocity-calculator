@@ -21,7 +21,7 @@ namespace OrbitalCalculatorApp
         {
             InitializeComponent();
         }
-          
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -40,8 +40,8 @@ namespace OrbitalCalculatorApp
 
             if (defaultBodies.Items.Count > 0)
             {
-                defaultBodies.SelectedIndex = rand.Next(defaultBodies.Items.Count-1);
-            }           
+                defaultBodies.SelectedIndex = rand.Next(defaultBodies.Items.Count - 1);
+            }
         }
 
         private void defaultBodies_SelectedIndexChanged(object sender, EventArgs e)
@@ -112,10 +112,10 @@ namespace OrbitalCalculatorApp
 
         private void simulate()
         {
-            
+
 
             if (setAllVariables())
-            {                
+            {
 
                 console.Text = "";
                 console.Text += "Prędkość orbitalna: " + model.calcOrbitalVelocity().ToString() + $" m/s\r\n";
@@ -190,13 +190,13 @@ namespace OrbitalCalculatorApp
             svrChart.Titles.Clear();
             svrChart.Titles.Add("Zależność prędkości od wysokości orbity");
 
-            addVerticalLineToChart(height, "Wysokość satelity", Color.Orange);            
+            addVerticalLineToChart(height, "Wysokość satelity", Color.Orange);
         }
 
         private void closeButton_Click(object sender, EventArgs e)
         {
             this.Close();
-        }       
+        }
 
         private void addVerticalLineToChart(double position, string label, Color color)
         {
@@ -206,7 +206,7 @@ namespace OrbitalCalculatorApp
                 BorderWidth = 2,
                 Color = color
             };
-            
+
             lineSeries.Points.AddXY(position, svrChart.ChartAreas[0].AxisY.Minimum);
             lineSeries.Points.AddXY(position, svrChart.ChartAreas[0].AxisY.Maximum);
 
@@ -216,24 +216,45 @@ namespace OrbitalCalculatorApp
         private void SaveButton_Click(object sender, EventArgs e)
         {
             // ad tbSatSave
+
             /*
              * Domyślnie planowalem zeby dane były zapisywane w pliku csv, a nie txt
              * zeby pozniej wygodnie bylo skalowac ta aplikacje
              */
-            string filePath = tbSatSave.Text;
-            try
-            {
-                StreamWriter sw = new StreamWriter(filePath);                
-                sw.WriteLine($"customM,{customM.Text}");
-                sw.WriteLine($"customR,{customR.Text}");
-                sw.WriteLine($"satM,{satM.Text}");
-                sw.WriteLine($"satH,{satH.Text}");
 
-                MessageBox.Show("Dane zostały zapisane do pliku CSV pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Title = "Save Satellite Data",
+                Filter = "CSV files (*.csv)|*.csv|Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                DefaultExt = "csv",
+                AddExtension = true,
+                FileName = "satellite_data.csv" 
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                
+                string filePath = saveFileDialog.FileName;
+                tbSatSave.Text = filePath;
+
+                try
+                {
+                    StreamWriter sw = new StreamWriter(filePath);
+                    sw.WriteLine($"customM,{customM.Text}");
+                    sw.WriteLine($"customR,{customR.Text}");
+                    sw.WriteLine($"satM,{satM.Text}");
+                    sw.WriteLine($"satH,{satH.Text}");
+
+                    MessageBox.Show("Dane zostały zapisane do pliku CSV pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Błąd podczas zapisywania danych: {ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            catch (Exception ex) {
-                MessageBox.Show($"Błąd podczas zapisywania danych: {ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+
         }
 
         private void LoadButton_Click(object sender, EventArgs e)
