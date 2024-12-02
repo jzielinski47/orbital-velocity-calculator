@@ -22,6 +22,9 @@ namespace OrbitalCalculatorApp
         private Thread calculationThread;
         private Thread imageRenderingThread;
 
+        private double satRadiusAnim;
+        private double bodRadiusAnim;
+
         public Main()
         {
             InitializeComponent();
@@ -48,7 +51,7 @@ namespace OrbitalCalculatorApp
             {
                 int selectedIndex = rand.Next(defaultBodies.Items.Count - 1);
                 defaultBodies.SelectedIndex = selectedIndex;
-            }
+            }            
         }
 
         private void defaultBodies_SelectedIndexChanged(object sender, EventArgs e)
@@ -107,6 +110,8 @@ namespace OrbitalCalculatorApp
                 return;
             }
 
+            orbitTimer.Start();
+
             progressBar.Value = 0;
             progressBar.Maximum = 100;
 
@@ -149,6 +154,9 @@ namespace OrbitalCalculatorApp
             {
                 if (!setAllVariables()) return;
 
+                satRadiusAnim = model.r;
+                bodRadiusAnim = model.R;
+
                 Invoke((MethodInvoker)(() =>
                 {
                     console.Text = "";
@@ -156,7 +164,7 @@ namespace OrbitalCalculatorApp
                 }));
 
                 double height = model.r - model.R;
-                const int points = 100; // dyskretyzacja obszaru obliczeń, domyślnie ustawione 100 punktów
+                const int points = 100; // dyskretyzacja obszaru obliczeń, domyślnie ustawione 100 punktów                               
 
                 double orbitalVelocity = model.calcOrbitalVelocity();
                 double escapeVelocity = model.calcEscapeVelocity();
@@ -171,9 +179,12 @@ namespace OrbitalCalculatorApp
                                    $"Siła grawitacyjna: {gravitationalForce} N\r\n" +
                                    $"Energia orbitalna: {orbitalEnergy} J\r\n" +
                                    $"Okres orbitalny: {orbitalPeriod} s\r\n";
+
+                    DrawOrbit(satRadiusAnim, bodRadiusAnim);
+
                 }));
 
-
+                orbitTimer.Start();
                 PlotChart(height, points);
 
             }
@@ -387,6 +398,61 @@ namespace OrbitalCalculatorApp
             {
                 webBrowser.Document.Body.Style = "zoom: 30%;";
             }
+        }
+
+        private double currentAngle = 0; 
+
+        private void DrawOrbit(double orbitalRadius, double planetRadius)
+        {
+            int width = orbitPictureBox.Width;
+            int height = orbitPictureBox.Height;
+
+            Bitmap bitmap = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                g.Clear(Color.Black);
+
+                int centerX = width / 2;
+                int centerY = height / 2;
+                
+                double scale = planetRadius > 1E4 ? 0.001 : 0.01;
+                if (planetRadius > 3E4) scale = 0.0003;
+                                
+                Brush planetBrush = Brushes.Blue;
+                int planetDiameter = (int)(planetRadius * scale);
+                int planetX = centerX - planetDiameter / 2;
+                int planetY = centerY - planetDiameter / 2;
+                g.FillEllipse(planetBrush, planetX, planetY, planetDiameter, planetDiameter);
+                
+                Pen orbitPen = new Pen(Color.Gray, 2);
+                int orbitDiameter = (int)(orbitalRadius * scale);
+                int orbitX = centerX - orbitDiameter / 2;
+                int orbitY = centerY - orbitDiameter / 2;
+                g.DrawEllipse(orbitPen, orbitX, orbitY, orbitDiameter, orbitDiameter);
+                
+                Brush satelliteBrush = Brushes.Red;
+                int satelliteDiameter = 10;
+
+                // wyswietl w radianach
+                double angleRadians = currentAngle * Math.PI / 180;
+                
+                double satelliteX = centerX + orbitDiameter / 2 * Math.Cos(angleRadians) - satelliteDiameter / 2;
+                double satelliteY = centerY + orbitDiameter / 2 * Math.Sin(angleRadians) - satelliteDiameter / 2;
+                g.FillEllipse(satelliteBrush, (float)satelliteX, (float)satelliteY, satelliteDiameter, satelliteDiameter);
+            }
+
+            orbitPictureBox.Image = bitmap;
+        }
+
+
+        private void orbitTimer_Tick(object sender, EventArgs e)
+        {            
+            currentAngle += 5;
+            if (currentAngle >= 360) currentAngle -= 360;
+
+            DrawOrbit(satRadiusAnim, bodRadiusAnim);
+
+            Console.WriteLine("dziala");
         }
 
     }

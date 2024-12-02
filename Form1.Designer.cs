@@ -31,9 +31,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.lbPlanet = new System.Windows.Forms.Label();
             this.isCustom = new System.Windows.Forms.CheckBox();
             this.defaultBodies = new System.Windows.Forms.ComboBox();
@@ -61,8 +62,11 @@
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.label6 = new System.Windows.Forms.Label();
+            this.orbitPictureBox = new System.Windows.Forms.PictureBox();
+            this.orbitTimer = new System.Windows.Forms.Timer(this.components);
             this.customSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.svrChart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.orbitPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // lbPlanet
@@ -221,18 +225,18 @@
             // 
             // svrChart
             // 
-            chartArea3.Name = "ChartArea1";
-            this.svrChart.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.svrChart.Legends.Add(legend3);
+            chartArea5.Name = "ChartArea1";
+            this.svrChart.ChartAreas.Add(chartArea5);
+            legend5.Name = "Legend1";
+            this.svrChart.Legends.Add(legend5);
             this.svrChart.Location = new System.Drawing.Point(298, 271);
             this.svrChart.Name = "svrChart";
             this.svrChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Excel;
-            series3.ChartArea = "ChartArea1";
-            series3.IsXValueIndexed = true;
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.svrChart.Series.Add(series3);
+            series5.ChartArea = "ChartArea1";
+            series5.IsXValueIndexed = true;
+            series5.Legend = "Legend1";
+            series5.Name = "Series1";
+            this.svrChart.Series.Add(series5);
             this.svrChart.Size = new System.Drawing.Size(1032, 408);
             this.svrChart.TabIndex = 19;
             this.svrChart.Text = "chart1";
@@ -331,12 +335,26 @@
             this.label6.TabIndex = 29;
             this.label6.Text = "Status obliczeń:";
             // 
+            // orbitPictureBox
+            // 
+            this.orbitPictureBox.Location = new System.Drawing.Point(12, 611);
+            this.orbitPictureBox.Name = "orbitPictureBox";
+            this.orbitPictureBox.Size = new System.Drawing.Size(264, 258);
+            this.orbitPictureBox.TabIndex = 30;
+            this.orbitPictureBox.TabStop = false;
+            // 
+            // orbitTimer
+            // 
+            this.orbitTimer.Interval = 500;
+            this.orbitTimer.Tick += new System.EventHandler(this.orbitTimer_Tick);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1666, 922);
+            this.ClientSize = new System.Drawing.Size(1413, 922);
+            this.Controls.Add(this.orbitPictureBox);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.webBrowser);
@@ -365,6 +383,7 @@
             this.customSettings.ResumeLayout(false);
             this.customSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.svrChart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.orbitPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -399,6 +418,8 @@
         private System.Windows.Forms.WebBrowser webBrowser;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.PictureBox orbitPictureBox;
+        private System.Windows.Forms.Timer orbitTimer;
     }
 }
 
