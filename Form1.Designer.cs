@@ -31,9 +31,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.lbPlanet = new System.Windows.Forms.Label();
             this.isCustom = new System.Windows.Forms.CheckBox();
             this.defaultBodies = new System.Windows.Forms.ComboBox();
@@ -59,6 +59,8 @@
             this.SaveButtun = new System.Windows.Forms.Button();
             this.LoadButton = new System.Windows.Forms.Button();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.label6 = new System.Windows.Forms.Label();
             this.customSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.svrChart)).BeginInit();
             this.SuspendLayout();
@@ -208,6 +210,7 @@
             // console
             // 
             this.console.BackColor = System.Drawing.SystemColors.MenuText;
+            this.console.Cursor = System.Windows.Forms.Cursors.Help;
             this.console.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.console.ForeColor = System.Drawing.Color.Orange;
             this.console.Location = new System.Drawing.Point(277, 37);
@@ -218,18 +221,18 @@
             // 
             // svrChart
             // 
-            chartArea1.Name = "ChartArea1";
-            this.svrChart.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.svrChart.Legends.Add(legend1);
+            chartArea3.Name = "ChartArea1";
+            this.svrChart.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.svrChart.Legends.Add(legend3);
             this.svrChart.Location = new System.Drawing.Point(298, 271);
             this.svrChart.Name = "svrChart";
             this.svrChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Excel;
-            series1.ChartArea = "ChartArea1";
-            series1.IsXValueIndexed = true;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.svrChart.Series.Add(series1);
+            series3.ChartArea = "ChartArea1";
+            series3.IsXValueIndexed = true;
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.svrChart.Series.Add(series3);
             this.svrChart.Size = new System.Drawing.Size(1032, 408);
             this.svrChart.TabIndex = 19;
             this.svrChart.Text = "chart1";
@@ -302,6 +305,9 @@
             // 
             // webBrowser
             // 
+            this.webBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.webBrowser.Location = new System.Drawing.Point(816, 37);
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
@@ -309,12 +315,30 @@
             this.webBrowser.TabIndex = 27;
             this.webBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(298, 717);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(1032, 14);
+            this.progressBar.TabIndex = 28;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(295, 692);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(82, 13);
+            this.label6.TabIndex = 29;
+            this.label6.Text = "Status obliczeń:";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1383, 719);
+            this.ClientSize = new System.Drawing.Size(1666, 922);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.webBrowser);
             this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.SaveButtun);
@@ -373,6 +397,8 @@
         private System.Windows.Forms.Button SaveButtun;
         private System.Windows.Forms.Button LoadButton;
         private System.Windows.Forms.WebBrowser webBrowser;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Label label6;
     }
 }
 

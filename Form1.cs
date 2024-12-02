@@ -11,11 +11,16 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using CheckBox = System.Windows.Forms.CheckBox;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.IO;
+using System.Threading;
+using System.Diagnostics;
 
 namespace OrbitalCalculatorApp
 {
     public partial class Main : Form
     {
+
+        private Thread calculationThread;
+        private Thread imageRenderingThread;
 
         public Main()
         {
@@ -25,8 +30,8 @@ namespace OrbitalCalculatorApp
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            init();
-            webBrowser.DocumentCompleted += webBrowser_DocumentCompleted;
+            init();           
+            webBrowser.Invoke((MethodInvoker)(() => { webBrowser.DocumentCompleted += webBrowser_DocumentCompleted; }));
             lbConstantG.Text = "Stała grawitacyjna przyjęta jako " + Model.G.ToString();
             manageInputLocker(isCustom.Checked);
         }
@@ -41,7 +46,7 @@ namespace OrbitalCalculatorApp
 
             if (defaultBodies.Items.Count > 0)
             {
-                int selectedIndex = rand.Next(defaultBodies.Items.Count - 1);     
+                int selectedIndex = rand.Next(defaultBodies.Items.Count - 1);
                 defaultBodies.SelectedIndex = selectedIndex;
             }
         }
@@ -52,14 +57,19 @@ namespace OrbitalCalculatorApp
             customM.Text = selectedBody.M.ToString();
             customR.Text = selectedBody.R.ToString();
 
-            if (!string.IsNullOrEmpty(selectedBody.Url))
-            {
-                webBrowser.Navigate(selectedBody.Url);
-            }
-            else
-            {
-                MessageBox.Show($"No information available for {selectedBody.Name}.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            imageRenderingThread = new Thread(() =>
+            {               
+                if (!string.IsNullOrEmpty(selectedBody.Url))
+                {
+                    webBrowser.Invoke((MethodInvoker)(() => webBrowser.Navigate(selectedBody.Url)));                    
+                }
+                else
+                {
+                    MessageBox.Show($"No information available for {selectedBody.Name}.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            });
+            imageRenderingThread.IsBackground = true;
+            imageRenderingThread.Start();           
         }
 
         private void isCustom_CheckedChanged(object sender, EventArgs e)
@@ -91,7 +101,19 @@ namespace OrbitalCalculatorApp
 
         private void OnCalculateClick(object sender, EventArgs e)
         {
-            simulate();
+            if (calculationThread != null && calculationThread.IsAlive)
+            {
+                MessageBox.Show("Proszę czekać na zakończenie wątku obliczeń.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            progressBar.Value = 0;
+            progressBar.Maximum = 100;
+
+            calculationThread = new Thread(() => simulate());
+            calculationThread.IsBackground = true;
+            calculationThread.Start();
+
         }
 
         private bool setAllVariables()
@@ -123,27 +145,51 @@ namespace OrbitalCalculatorApp
 
         private void simulate()
         {
-
-
-            if (setAllVariables())
+            try
             {
+                if (!setAllVariables()) return;
 
-                console.Text = "";
-                console.Text += "Prędkość orbitalna: " + model.calcOrbitalVelocity().ToString() + $" m/s\r\n";
-                console.Text += "Prędkość ucieczki: " + model.calcEscapeVelocity().ToString() + $" m/s\r\n";
-                console.Text += "Siła grawitacyjna: " + model.calcGravitationalForce().ToString() + " N\r\n";
-                console.Text += "Energia orbitalna: " + model.calcOrbitalEnergy().ToString() + " J\r\n";
-                console.Text += "Okres orbitalny: " + model.calcOrbitalPeriod().ToString() + " s\r\n";
+                Invoke((MethodInvoker)(() =>
+                {
+                    console.Text = "";
+                    progressBar.Value = 0;
+                }));
 
                 double height = model.r - model.R;
-                PlotChart(height, 100);
+                const int points = 100; // dyskretyzacja obszaru obliczeń, domyślnie ustawione 100 punktów
 
-            };
+                double orbitalVelocity = model.calcOrbitalVelocity();
+                double escapeVelocity = model.calcEscapeVelocity();
+                double gravitationalForce = model.calcGravitationalForce();
+                double orbitalEnergy = model.calcOrbitalEnergy();
+                double orbitalPeriod = model.calcOrbitalPeriod();
+
+                Invoke((MethodInvoker)(() =>
+                {
+                    console.Text = $"Prędkość orbitalna: {orbitalVelocity} m/s\r\n" +
+                                   $"Prędkość ucieczki: {escapeVelocity} m/s\r\n" +
+                                   $"Siła grawitacyjna: {gravitationalForce} N\r\n" +
+                                   $"Energia orbitalna: {orbitalEnergy} J\r\n" +
+                                   $"Okres orbitalny: {orbitalPeriod} s\r\n";
+                }));
+
+
+                PlotChart(height, points);
+
+            }
+            catch (Exception ex)
+            {
+                Invoke((MethodInvoker)(() =>
+                {
+                    MessageBox.Show($"Wystąpił błąd podczas obliczeń: {ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }));
+            }
         }
 
         private void PlotChart(double height, int points)
         {
-            svrChart.Series.Clear();
+
+            svrChart.Invoke((MethodInvoker)(() => svrChart.Series.Clear()));
 
             Series orbitalVelocitySeries = new Series("Prędkość orbitalna")
             {
@@ -176,36 +222,57 @@ namespace OrbitalCalculatorApp
                 double orbitalVelocity = model.calcOrbitalVelocity();
                 double escapeVelocity = model.calcEscapeVelocity();
 
-                orbitalVelocitySeries.Points.AddXY(currentHeight, orbitalVelocity);
-                escapeVelocitySeries.Points.AddXY(currentHeight, escapeVelocity);
+                svrChart.Invoke((MethodInvoker)(() =>
+                {
+                    orbitalVelocitySeries.Points.AddXY(currentHeight, orbitalVelocity);
+                    escapeVelocitySeries.Points.AddXY(currentHeight, escapeVelocity);
+                }));
 
                 minValue = Math.Min(minValue, Math.Min(orbitalVelocity, escapeVelocity));
                 maxValue = Math.Max(maxValue, Math.Max(orbitalVelocity, escapeVelocity));
+
+                int progress = (int)((double)i / points * 100);
+                Invoke((MethodInvoker)(() => progressBar.Value = progress));
+
+                Thread.Sleep(2);
             }
 
-            svrChart.Series.Add(orbitalVelocitySeries);
-            svrChart.Series.Add(escapeVelocitySeries);
+            svrChart.Invoke((MethodInvoker)(() =>
+            {
 
-            svrChart.ChartAreas[0].AxisX.Minimum = 0;
-            svrChart.ChartAreas[0].AxisX.Maximum = max;
+                svrChart.Series.Add(orbitalVelocitySeries);
+                svrChart.Series.Add(escapeVelocitySeries);
 
-            svrChart.ChartAreas[0].AxisY.Minimum = Math.Max(0, minValue * 0.9);
-            svrChart.ChartAreas[0].AxisY.Maximum = maxValue * 1.1;
+                svrChart.ChartAreas[0].AxisX.Minimum = 0;
+                svrChart.ChartAreas[0].AxisX.Maximum = max;
 
-            svrChart.ChartAreas[0].AxisX.Title = "Wysokość orbity (km)";
-            svrChart.ChartAreas[0].AxisY.Title = "Prędkość (km/s)";
+                svrChart.ChartAreas[0].AxisY.Minimum = Math.Max(0, minValue * 0.9);
+                svrChart.ChartAreas[0].AxisY.Maximum = maxValue * 1.1;
 
-            svrChart.Width = 1000;
-            svrChart.Height = 400;
+                svrChart.ChartAreas[0].AxisX.Title = "Wysokość orbity (km)";
+                svrChart.ChartAreas[0].AxisY.Title = "Prędkość (km/s)";
 
-            svrChart.Titles.Clear();
-            svrChart.Titles.Add("Zależność prędkości od wysokości orbity");
+                svrChart.Width = 1000;
+                svrChart.Height = 400;
+
+                svrChart.Titles.Clear();
+                svrChart.Titles.Add("Zależność prędkości od wysokości orbity");
+
+            }));
 
             addVerticalLineToChart(height, "Wysokość satelity", Color.Orange);
+            Invoke((MethodInvoker)(() => progressBar.Value = 100));
+
         }
 
         private void closeButton_Click(object sender, EventArgs e)
         {
+            if (calculationThread != null && calculationThread.IsAlive)
+            {
+                MessageBox.Show("Proszę czekać na zakończenie wątku obliczeń.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             this.Close();
         }
 
@@ -221,7 +288,7 @@ namespace OrbitalCalculatorApp
             lineSeries.Points.AddXY(position, svrChart.ChartAreas[0].AxisY.Minimum);
             lineSeries.Points.AddXY(position, svrChart.ChartAreas[0].AxisY.Maximum);
 
-            svrChart.Series.Add(lineSeries);
+            svrChart.Invoke((MethodInvoker)(() => svrChart.Series.Add(lineSeries)));
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
@@ -321,5 +388,6 @@ namespace OrbitalCalculatorApp
                 webBrowser.Document.Body.Style = "zoom: 30%;";
             }
         }
+
     }
 }
