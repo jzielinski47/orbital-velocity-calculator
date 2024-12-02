@@ -1,5 +1,5 @@
 # Orbital Velocity Calculator
-![image](https://github.com/user-attachments/assets/5f0a377b-b4da-4d74-b4fd-644138c2748b)
+![image](https://github.com/user-attachments/assets/876a70a1-36fe-470d-b3f4-793043630c65)
 
 ## Overview
 The Orbital Velocity Calculator is a <b>.NET Framework-based Windows Forms application</b> developed as a part of my university coursework at [Cracow University of Technology](www.pk.edu.pl). This project was created to fulfill the requirements of a <b>.NET Framework assignment</b>, which focused on implementing engineering-related concepts. It combines programming techniques with the principles of orbital mechanics, inspired by my interest in space exploration and games like Kerbal Space Program.
